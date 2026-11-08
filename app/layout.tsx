@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   openGraph: { images: ["/ig/p/tienda-caja.jpg"], locale: "es_CR", siteName: site.name },
   title: { default: `${site.name} — ${site.tagline}`, template: `%s · ${site.name}` },
   description: site.description,
-  icons: { icon: "/dryx-logo.jpg" },
 }
 
 export const viewport: Viewport = { themeColor: "#0b0b0b" }
