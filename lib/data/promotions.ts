@@ -1,0 +1,46 @@
+import type { Promotion } from "@/lib/types"
+
+export const seedPromotions: Promotion[] = [
+  {
+    id: "promo-noviembre",
+    title: "Noviembre DRYX",
+    subtitle: "Inauguración en San José: 10 % en sneakers seleccionados todo el mes",
+    type: "percent",
+    value: 10,
+    target: { kind: "product", ids: ["p009", "p010"] },
+    startsAt: "2026-11-01T06:00:00.000Z",
+    endsAt: "2026-11-30T23:59:59.000Z",
+    active: true,
+  },
+  {
+    id: "promo-3x35",
+    title: "3 camisetas DRYX × ₡35.000",
+    subtitle: "Mezclá colores y estilos. Ahorrás ₡9.700. Aplican restricciones.",
+    type: "banner",
+    target: { kind: "product", ids: ["p013", "p014"] },
+    startsAt: "2026-11-01T06:00:00.000Z",
+    endsAt: "2026-12-31T23:59:59.000Z",
+    active: true,
+  },
+  {
+    id: "promo-combo-nba",
+    title: "Combo camisa + gorra ₡43.000",
+    subtitle: "Llevate una camisa NBA y una gorra y te ahorrás ₡4.800.",
+    type: "banner",
+    target: { kind: "category", ids: ["gorras"] },
+    startsAt: "2026-11-01T06:00:00.000Z",
+    endsAt: "2026-12-15T23:59:59.000Z",
+    active: true,
+  },
+  {
+    id: "promo-gorras-share",
+    title: "Gorras a ₡19.900",
+    subtitle: "Compartí nuestra publicación, mostralo en tienda y tu gorra queda en ₡19.900.",
+    type: "fixed",
+    value: 3000,
+    target: { kind: "category", ids: ["gorras"] },
+    startsAt: "2026-03-17T06:00:00.000Z",
+    endsAt: "2026-03-31T23:59:59.000Z",
+    active: false,
+  },
+]
