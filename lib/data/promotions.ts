@@ -21,6 +21,9 @@ export const seedPromotions: Promotion[] = [
     startsAt: "2026-11-01T06:00:00.000Z",
     endsAt: "2026-12-31T23:59:59.000Z",
     active: true,
+    image: "/ig/p/dryx-drycool.jpg",
+    imagePosition: "50% 45%",
+    cta: "Armar mi combo",
   },
   {
     id: "promo-combo-nba",

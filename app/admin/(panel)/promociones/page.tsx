@@ -1,6 +1,7 @@
 "use client"
 
-import { MegaphoneIcon, PencilIcon, PercentIcon, PlusIcon, TagIcon, Trash2Icon } from "lucide-react"
+import { ImageIcon, MegaphoneIcon, PencilIcon, PercentIcon, PlusIcon, TagIcon, Trash2Icon } from "lucide-react"
+import Image from "next/image"
 import { useLayoutEffect, useState } from "react"
 import { toast } from "sonner"
 import { PageHeader } from "@/components/admin/status"
@@ -13,12 +14,15 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { MEDIA } from "@/lib/data/media"
 import { CATEGORIES, categoryLabel } from "@/lib/data/products"
 import { formatCRC, formatDate, uid } from "@/lib/format"
+import { landingBanner } from "@/lib/landing"
 import { isPromoLive, promoApplies } from "@/lib/pricing"
 import { promotionsStore, useProducts, usePromotions } from "@/lib/store"
 import { useNow } from "@/lib/store/hooks"
 import type { Promotion, PromotionType } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 const TYPES: Record<PromotionType, string> = {
   banner: "Banner informativo",
@@ -46,6 +50,7 @@ export default function PromotionsPage() {
   const promos = usePromotions()
   const products = useProducts()
   const now = useNow()
+  const bannerId = landingBanner(promos, now)?.id
   const [editing, setEditing] = useState<Promotion | null>(null)
   // Diálogos/paneles abiertos son estado transitorio: se cierran al salir de la página
   // (Next oculta la ruta en vez de desmontarla y, si no, reaparecerían abiertos al volver).
@@ -62,7 +67,7 @@ export default function PromotionsPage() {
     <>
       <PageHeader
         title="Promociones"
-        description="Los descuentos (% o ₡) se aplican solos en la tienda. Los banners solo anuncian (ej. 3×₡35.000) y se cobran al confirmar por WhatsApp."
+        description="Los descuentos (% o ₡) se aplican solos en la tienda. Los banners solo anuncian (ej. 3×₡35.000) y se cobran al confirmar por WhatsApp; con foto, salen en la página de inicio."
         actions={
           <Button onClick={() => setEditing(empty())}>
             <PlusIcon data-icon="inline-start" /> Nueva promoción
@@ -94,6 +99,7 @@ export default function PromotionsPage() {
                     ) : (
                       <Badge variant="outline">Programada</Badge>
                     )}
+                    {bannerId === p.id && <Badge variant="outline">Banner de la landing</Badge>}
                   </div>
                   <p className="mt-1 text-sm text-pretty text-muted-foreground">{p.subtitle}</p>
                   <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-xs sm:grid-cols-3">
@@ -168,7 +174,8 @@ function PromoForm({ initial, onClose }: { initial: Promotion; onClose: () => vo
   const products = useProducts()
   const [p, setP] = useState(initial)
   const [touched, setTouched] = useState(false)
-  const up = (patch: Partial<Promotion>) => setP((cur) => ({ ...cur, ...patch }))
+  const [picking, setPicking] = useState(false)
+  const up =(patch: Partial<Promotion>) => setP((cur) => ({ ...cur, ...patch }))
 
   const errors = {
     title: p.title.trim().length < 3 ? "Poné un título corto y claro." : "",
@@ -187,7 +194,7 @@ function PromoForm({ initial, onClose }: { initial: Promotion; onClose: () => vo
   function save() {
     setTouched(true)
     if (firstError) return
-    const saved = { ...p, id: p.id || `promo-${uid()}`, title: p.title.trim(), subtitle: p.subtitle.trim() }
+    const saved = { ...p, id: p.id || `promo-${uid()}`, title: p.title.trim(), subtitle: p.subtitle.trim(), cta: p.cta?.trim() || undefined }
     promotionsStore.set((all) => (p.id ? all.map((x) => (x.id === p.id ? saved : x)) : [saved, ...all]))
     toast.success(p.id ? "Promoción actualizada" : "Promoción creada")
     onClose()
@@ -235,6 +242,74 @@ function PromoForm({ initial, onClose }: { initial: Promotion; onClose: () => vo
           </div>
         )}
       </div>
+
+      {p.type === "banner" && (
+        <div className="grid gap-3 rounded-lg border border-border p-3">
+          <div className="flex items-center gap-3">
+            <div className="relative grid size-16 shrink-0 place-items-center overflow-hidden rounded-md bg-muted">
+              {p.image ? (
+                <Image src={p.image} alt="" fill sizes="64px" className="object-cover" style={{ objectPosition: p.imagePosition }} />
+              ) : (
+                <ImageIcon className="size-5 text-muted-foreground" />
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">Banner en la página de inicio</p>
+              <p className="text-xs text-pretty text-muted-foreground">
+                Con foto, la promo sale como banner grande en la landing. El botón lleva a lo que elijas en “Aplica a”.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" size="sm" aria-expanded={picking} onClick={() => setPicking((v) => !v)}>
+              {p.image ? "Cambiar foto" : "Elegir foto"}
+            </Button>
+            {p.image && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  up({ image: undefined, imagePosition: undefined })
+                  setPicking(false)
+                }}
+              >
+                Quitar foto
+              </Button>
+            )}
+          </div>
+          {picking && (
+            <ScrollArea className="rounded-lg border border-border" viewportClassName="max-h-56 p-2">
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+                {MEDIA.map((src) => (
+                  <button
+                    key={src}
+                    type="button"
+                    aria-pressed={p.image === src}
+                    aria-label="Usar esta foto"
+                    onClick={() => {
+                      up({ image: src, imagePosition: undefined })
+                      setPicking(false)
+                    }}
+                    className={cn(
+                      "relative aspect-[4/5] overflow-hidden rounded-md bg-muted ring-2",
+                      p.image === src ? "ring-brand" : "ring-transparent hover:ring-border",
+                    )}
+                  >
+                    <Image src={src} alt="" fill sizes="100px" className="object-cover" />
+                  </button>
+                ))}
+              </div>
+            </ScrollArea>
+          )}
+          {p.image && (
+            <div className="grid gap-2">
+              <Label htmlFor="pr-cta">Texto del botón</Label>
+              <Input id="pr-cta" value={p.cta ?? ""} onChange={(e) => up({ cta: e.target.value })} placeholder="Ver promoción" maxLength={28} />
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid gap-2">
         <Label htmlFor="pr-target">Aplica a</Label>

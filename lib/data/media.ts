@@ -1,3 +1,13 @@
+/** Videos disponibles en public/ig/v, cada uno con su portada. En la demo hacen de "biblioteca". */
+export const VIDEOS = [
+  { src: "/ig/v/hero.mp4", poster: "/ig/p/tienda-tour.jpg", label: "Recorrido por la tienda" },
+  { src: "/ig/v/reel-1.mp4", poster: "/ig/p/reel-1.jpg", label: "Te esperamos con los brazos abiertos" },
+  { src: "/ig/v/puma-suede-xl.mp4", poster: "/ig/p/puma-suede-xl.jpg", label: "Puma Suede XL" },
+  { src: "/ig/v/dryx-drycool.mp4", poster: "/ig/p/dryx-drycool.jpg", label: "DRYX Dry Cool" },
+  { src: "/ig/v/nb-550.mp4", poster: "/ig/p/nb-550.jpg", label: "Nuevo drop NB 550" },
+  { src: "/ig/v/ubicacion.mp4", poster: "/ig/p/ubicacion.jpg", label: "Cómo llegar" },
+]
+
 /** Fotos disponibles en public/ig/p (tomadas de @dryx.cr). */
 export const MEDIA = [
   "/ig/p/af1-cv.jpg",

@@ -1,7 +1,12 @@
-const BRANDS = ["Nike", "Puma", "New Balance", "Jordan", "New Era", "Hi-Tec", "DRYX"]
+"use client"
+
+import { useLanding } from "@/lib/store"
 
 export function BrandMarquee() {
-  const row = [...BRANDS, ...BRANDS]
+  const { brands } = useLanding()
+  if (brands.length === 0) return null
+  // Se repite la lista hasta llenar el ancho, aunque queden pocas marcas.
+  const row = Array.from({ length: Math.max(2, Math.ceil(12 / brands.length)) }, () => brands).flat()
   return (
     <section aria-label="Marcas disponibles" className="overflow-hidden border-y border-border bg-card/40 py-5">
       <div className="flex w-max animate-marquee [--marquee-duration:35s]">

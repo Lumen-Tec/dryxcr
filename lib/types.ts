@@ -43,6 +43,27 @@ export interface Promotion {
   startsAt: string
   endsAt: string
   active: boolean
+  /** Solo banners: con foto, la promo sale como banner grande en la landing. */
+  image?: string
+  /** CSS object-position de la foto del banner. */
+  imagePosition?: string
+  /** Texto del botón del banner. El enlace se deduce de `target`. */
+  cta?: string
+}
+
+export interface LandingVideo {
+  src: string
+  poster: string
+}
+
+/** Contenido editable de la landing. Espacios fijos: el admin llena casillas, no arma la página. */
+export interface LandingContent {
+  hero: LandingVideo
+  /** Siempre 4 espacios. */
+  reels: (LandingVideo & { caption: string })[]
+  brands: string[]
+  /** Orden de los productos destacados (ids). Los que no estén acá van al final. */
+  featuredOrder: string[]
 }
 
 export type OrderStatus = "nuevo" | "pagado" | "enviado" | "entregado" | "cancelado"

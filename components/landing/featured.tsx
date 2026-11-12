@@ -6,10 +6,12 @@ import { SectionHeading } from "@/components/landing/categories"
 import { ProductCard } from "@/components/shop/product-card"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { useProducts } from "@/lib/store"
+import { FEATURED_LIMIT } from "@/lib/data/landing"
+import { featuredProducts } from "@/lib/landing"
+import { useLanding, useProducts } from "@/lib/store"
 
 export function Featured() {
-  const products = useProducts().filter((p) => p.featured).slice(0, 8)
+  const products = featuredProducts(useProducts(), useLanding().featuredOrder).slice(0, FEATURED_LIMIT)
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
       <SectionHeading

@@ -7,15 +7,10 @@ import { SectionHeading } from "@/components/landing/categories"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { site } from "@/lib/site"
+import { useLanding } from "@/lib/store"
+import type { LandingContent } from "@/lib/types"
 
-const REELS = [
-  { src: "/ig/v/reel-1.mp4", poster: "/ig/p/reel-1.jpg", caption: "Te esperamos con los brazos abiertos" },
-  { src: "/ig/v/puma-suede-xl.mp4", poster: "/ig/p/puma-suede-xl.jpg", caption: "Puma Suede XL" },
-  { src: "/ig/v/dryx-drycool.mp4", poster: "/ig/p/dryx-drycool.jpg", caption: "DRYX Dry Cool" },
-  { src: "/ig/v/nb-550.mp4", poster: "/ig/p/nb-550.jpg", caption: "Nuevo drop NB 550" },
-]
-
-function Reel({ src, poster, caption }: (typeof REELS)[number]) {
+function Reel({ src, poster, caption }: LandingContent["reels"][number]) {
   const ref = useRef<HTMLVideoElement>(null)
   const [playing, setPlaying] = useState(false)
 
@@ -70,6 +65,7 @@ function Reel({ src, poster, caption }: (typeof REELS)[number]) {
 }
 
 export function Reels() {
+  const { reels } = useLanding()
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
       <SectionHeading
@@ -84,8 +80,8 @@ export function Reels() {
       />
       <ScrollArea scrollbars="horizontal" className="-mx-4 mt-10 sm:mx-0" viewportClassName="snap-x snap-mandatory">
       <div className="flex w-max gap-4 px-4 pb-3 sm:grid sm:w-auto sm:grid-cols-4 sm:px-0 sm:pb-0">
-        {REELS.map((r) => (
-          <Reel key={r.src} {...r} />
+        {reels.map((r, i) => (
+          <Reel key={`${i}-${r.src}`} {...r} />
         ))}
       </div>
       </ScrollArea>

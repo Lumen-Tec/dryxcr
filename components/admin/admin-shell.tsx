@@ -4,6 +4,7 @@ import {
   BoxesIcon,
   ExternalLinkIcon,
   LayoutDashboardIcon,
+  LayoutTemplateIcon,
   LogOutIcon,
   PackageIcon,
   ReceiptTextIcon,
@@ -41,6 +42,7 @@ const NAV = [
   { href: "/admin/productos", label: "Productos", Icon: PackageIcon },
   { href: "/admin/inventario", label: "Inventario", Icon: BoxesIcon, badge: "stock" },
   { href: "/admin/promociones", label: "Promociones", Icon: TagIcon },
+  { href: "/admin/landing", label: "Página de inicio", Icon: LayoutTemplateIcon },
 ] as const
 
 const noop = () => () => {}
